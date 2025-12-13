@@ -304,7 +304,8 @@ extern BOOLEAN VideoPortDisableX86Emulator;
 extern KMUTEX VideoPortInt10Mutex;
 
 NTSTATUS
-IntInitializeInt10(VOID);
+IntInitializeInt10(
+    _In_ BOOLEAN FirstPhase);
 
 VP_STATUS
 NTAPI
