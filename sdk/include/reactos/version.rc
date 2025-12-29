@@ -1,26 +1,19 @@
 /*
  * Inspired by Wine file include/wine_common_ver.rc
  * Copyright 2001 Dmitry Timoshkov
- *
- * Most version components are set to reasonable defaults here.
- * If you're including this for a .DLL, #define REACTOS_VERSION_DLL before the #include.
- * Other things to #define:
- * REACTOS_STR_FILE_DESCRIPTION
- * REACTOS_STR_INTERNAL_NAME
- * REACTOS_STR_ORIGINAL_FILENAME
- *
+ * Modified for SolunOS / OpenNT Project
  */
 
 #include "winver.h"
 #include "version.h"
 #include "buildno.h"
 
-/* Define some defaults (shouldn't be overwritten by applications */
-#define REACTOS_DEFAULT_STR_COMPANY_NAME    "ReactOS Project"
-#define REACTOS_DEFAULT_STR_DESCRIPTION     "ReactOS Core Component"
-#define REACTOS_DEFAULT_STR_INTERNAL_NAME   ""
-#define REACTOS_DEFAULT_STR_LEGAL_COPYRIGHT "(C) 1996-" COPYRIGHT_YEAR " ReactOS Project"
-#define REACTOS_DEFAULT_STR_PRODUCT_NAME    "ReactOS Operating System"
+/* --- AQUÍ ESTÁN LOS NOMBRES DEFINITIVOS --- */
+#define REACTOS_DEFAULT_STR_COMPANY_NAME    "OpenNT Project"
+#define REACTOS_DEFAULT_STR_DESCRIPTION     "SolunOS Operating System"
+#define REACTOS_DEFAULT_STR_INTERNAL_NAME   "SolunOS"
+#define REACTOS_DEFAULT_STR_LEGAL_COPYRIGHT "(C) 2025 SolunOS Team & OpenNT Contributors"
+#define REACTOS_DEFAULT_STR_PRODUCT_NAME    "SolunOS"
 
 /* Set defaults for everything, unless overridden */
 #ifndef REACTOS_FILEVERSION
@@ -28,80 +21,89 @@
 #define REACTOS_FILEVERSION REACTOS_DLL_VERSION_MAJOR,KERNEL_VERSION_MINOR,KERNEL_VERSION_PATCH_LEVEL,0
 #else
 #define REACTOS_FILEVERSION KERNEL_VERSION_MAJOR,KERNEL_VERSION_MINOR,KERNEL_VERSION_PATCH_LEVEL,0
-#endif /* REACTOS_VERSION_DLL */
-#endif /* REACTOS_FILEVERSION */
+#endif
+#endif
 
 #ifndef REACTOS_PRODUCTVERSION
+/* Esto define la versión numérica interna (1,0,0,0) */
 #define REACTOS_PRODUCTVERSION KERNEL_VERSION_MAJOR,KERNEL_VERSION_MINOR,KERNEL_VERSION_PATCH_LEVEL,0
-#endif /* REACTOS_PRODUCTVERSION */
+#endif
 
 #ifndef REACTOS_FILEFLAGSMASK
 #define REACTOS_FILEFLAGSMASK 0x3fL
-#endif /* REACTOS_FILEFLAGSMASK */
+#endif
 
 #ifndef REACTOS_FILEFLAGS
 #ifdef _DEBUG
 #define REACTOS_FILEFLAGS VS_FF_DEBUG
 #else
 #define REACTOS_FILEFLAGS 0x0L
-#endif /* _DEBUG */
-#endif /* REACTOS_FILEFLAGS */
+#endif
+#endif
 
 #ifndef REACTOS_FILEOS
 #define REACTOS_FILEOS VOS_NT_WINDOWS32
-#endif /* REACTOS_FILEOS */
+#endif
 
 #ifndef REACTOS_FILETYPE
 #ifdef REACTOS_VERSION_DLL
 #define REACTOS_FILETYPE VFT_DLL
 #else
 #define REACTOS_FILETYPE VFT_APP
-#endif /* REACTOS_VERSION_DLL */
-#endif /* REACTOS_FILETYPE */
+#endif
+#endif
 
 #ifndef REACTOS_FILESUBTYPE
 #define REACTOS_FILESUBTYPE VFT2_UNKNOWN
-#endif /* REACTOS_FILESUBTYPE */
+#endif
 
 #ifndef REACTOS_STR_COMPANY_NAME
 #define REACTOS_STR_COMPANY_NAME REACTOS_DEFAULT_STR_COMPANY_NAME
-#endif /* REACTOS_STR_COMPANY_NAME */
+#endif
 
 #ifndef REACTOS_STR_FILE_DESCRIPTION
 #define REACTOS_STR_FILE_DESCRIPTION REACTOS_DEFAULT_STR_FILE_DESCRIPTION
-#endif /* REACTOS_STR_FILE_DESCRIPTION */
+#endif
 
 #ifndef REACTOS_STR_FILE_VERSION
 #ifdef REACTOS_VERSION_DLL
 #define REACTOS_STR_FILE_VERSION REACTOS_DLL_VERSION_RC
 #else
 #define REACTOS_STR_FILE_VERSION KERNEL_VERSION_RC
-#endif /* REACTOS_VERSION_DLL */
-#endif /* REACTOS_STR_FILE_VERSION */
+#endif
+#endif
 
 #ifndef REACTOS_STR_INTERNAL_NAME
 #define REACTOS_STR_INTERNAL_NAME REACTOS_DEFAULT_STR_INTERNAL_NAME
-#endif /* REACTOS_STR_INTERNAL_NAME */
+#endif
 
 #ifndef REACTOS_STR_LEGAL_COPYRIGHT
 #define REACTOS_STR_LEGAL_COPYRIGHT REACTOS_DEFAULT_STR_LEGAL_COPYRIGHT
-#endif /* REACTOS_STR_LEGAL_COPYRIGHT */
+#endif
 
 #ifndef REACTOS_STR_ORIGINAL_FILENAME
 #define REACTOS_STR_ORIGINAL_FILENAME ""
-#endif /* REACTOS_STR_ORIGINAL_FILENAME */
+#endif
 
 #ifndef REACTOS_STR_PRODUCT_NAME
 #define REACTOS_STR_PRODUCT_NAME REACTOS_DEFAULT_STR_PRODUCT_NAME
-#endif /* REACTOS_STR_PRODUCT_NAME */
+#endif
 
+/* --- EL HACK DE LA VERSIÓN --- */
+/* Forzamos que la versión de producto sea TU string (52W25A) */
 #ifndef REACTOS_STR_PRODUCT_VERSION
-#define REACTOS_STR_PRODUCT_VERSION KERNEL_VERSION_RC
-#endif /* REACTOS_STR_PRODUCT_VERSION */
+#ifdef KERNEL_VERSION_STR
+    /* Usamos la variable que creamos en CMake: "52W25A" */
+    #define REACTOS_STR_PRODUCT_VERSION KERNEL_VERSION_STR
+#else
+    /* Fallback por si acaso */
+    #define REACTOS_STR_PRODUCT_VERSION KERNEL_VERSION_RC
+#endif
+#endif
 
 #ifndef REACTOS_STR_PRODUCT_BUILD
 #define REACTOS_STR_PRODUCT_BUILD KERNEL_VERSION_BUILD_RC
-#endif /* REACTOS_STR_PRODUCT_BUILD */
+#endif
 
 /* The version resource itself */
 VS_VERSION_INFO VERSIONINFO
@@ -123,14 +125,15 @@ BEGIN
             VALUE "InternalName",       REACTOS_STR_INTERNAL_NAME
 #ifdef REACTOS_STR_ORIGINAL_COPYRIGHT
             VALUE "OriginalCopyright",  REACTOS_STR_ORIGINAL_COPYRIGHT
-#endif /* REACTOS_STR_ORIGINAL_COPYRIGHT */
+#endif
             VALUE "LegalCopyright",     REACTOS_STR_LEGAL_COPYRIGHT
             VALUE "OriginalFilename",   REACTOS_STR_ORIGINAL_FILENAME
             VALUE "ProductName",        REACTOS_STR_PRODUCT_NAME
-            VALUE "ProductVersion",     REACTOS_STR_PRODUCT_VERSION
+            /* Aquí es donde saldrá 52W25A */
+            VALUE "ProductVersion",     REACTOS_STR_PRODUCT_VERSION 
 #ifdef REACTOS_OLESELFREGISTER
             VALUE "OLESelfRegister",    ""
-#endif /* REACTOS_OLESELFREGISTER */
+#endif
         END
     END
     BLOCK "VarFileInfo"

@@ -436,9 +436,9 @@ GetSystemVersionString(OUT PWSTR pwszzVersion,
         /* Multi-string for Normal Mode */
         Status = RtlStringCchPrintfW(pwszzVersion,
                                      cchDest,
-                                     L"ReactOS Version %S\n"
-                                     L"Build %wZ\n"
-                                     L"Reporting NT %u.%u (Build %u%s)\n",
+                                     L"SolunOS Version 0.1 Alpha - Dev Edition\n"
+                                     L"Build: 0001\n"
+                                     L"Reporting OpenNT 1\n",
                                      KERNEL_VERSION_STR,
                                      &BuildLabString,
                                      SharedUserData->NtMajorVersion,
